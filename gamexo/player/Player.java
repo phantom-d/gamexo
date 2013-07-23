@@ -1,17 +1,24 @@
 package gamexo.player;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 public class Player {
 
+	/**
+	 * Class Constants
+	 */
 	private static final int HUMAN = 0;
 	private static final int COMPUTER = 1;
+	/**
+	 * Local Constants
+	 */
 	private final int PLAYER_TYPE;
 	public final Character PLAYER_CHAR;
-
+	/**
+	 * Variables
+	 */
 	private Map<String, Integer> coords = new HashMap<String, Integer>();
 	public String name = "Игрок";
 
@@ -87,5 +94,4 @@ public class Player {
 	public Map<String, Integer> getCoords() {
 		return coords;
 	}
-
 }

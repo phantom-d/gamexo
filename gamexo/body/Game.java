@@ -1,30 +1,37 @@
 package gamexo.body;
 
-import java.io.IOException;
-import java.util.Scanner;
-import gamexo.player.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+import gamexo.player.Player;
 
 public class Game {
 
-	private final Character FIELD_CELL_LEFT = '[';
-	private final Character FIELD_CELL_RIGHT = ']';
-	private final char FIELD_CLEAR = ' ';
-
-	public final char[] PLAYERS_CHARS = {'X', 'O'};
+	/**
+	 * Class Constants
+	 */
 	public static final int PLAYER_WIN = 1;
 	public static final int PLAYER_DRAW = 0;
 	public static final int NEXT_TURN = -1;
+	/**
+	 * Local Constants
+	 */
+	private final Character FIELD_CELL_LEFT = '[';
+	private final Character FIELD_CELL_RIGHT = ']';
+	private final char FIELD_CLEAR = ' ';
+	public final char[] PLAYERS_CHARS = {'X', 'O'};
 
+	/**
+	 * Variables
+	 */
 	private int fieldSize = 3;
 	private char[][] gameField;
 	public List<Player> players = new ArrayList<Player>(PLAYERS_CHARS.length);
 
 	;
 
-	public void init() throws IOException {
+	public void init() {
 		readFieldSize();
 		initField();
 	}
@@ -96,7 +103,7 @@ public class Game {
 		gameField = new char[size][size];
 	}
 
-	private void readFieldSize() throws IOException {
+	private void readFieldSize() {
 		Scanner scanner = new Scanner(System.in);
 		int newFieldSize = getFieldSize();
 

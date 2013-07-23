@@ -1,21 +1,20 @@
 package gamexo;
 
-import java.io.IOException;
 import gamexo.body.Game;
 import gamexo.player.Player;
 
 public class Main {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		Game game = new Game();
 		game.init();
 
-		for (char marker: game.PLAYERS_CHARS) {
+		for (char marker : game.PLAYERS_CHARS) {
 			game.players.add(new Player(marker));
 		}
 		boolean result = false;
 		while (true) {
-			for (Player player: game.players) {
+			for (Player player : game.players) {
 				game.makeMove(player);
 				int checkWin = game.checkWin(player);
 				if (checkWin == Game.PLAYER_WIN) {
