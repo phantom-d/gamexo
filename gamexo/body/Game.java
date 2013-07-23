@@ -3,6 +3,7 @@ package gamexo.body;
 import java.io.IOException;
 import java.util.Scanner;
 import gamexo.player.Player;
+import java.util.Map;
 
 public class Game {
 
@@ -17,7 +18,6 @@ public class Game {
 	public void init() throws IOException {
 		readFieldSize();
 		initField();
-		showGameField();
 	}
 
 	/**
@@ -112,34 +112,38 @@ public class Game {
 	}
 
 	public void makeMove(Player player) throws IOException {
+		showGameField();
 		try {
-			int[] coords = player.readCoords();
+			Map<String, Integer> coords = player.readCoords();
 			if (!checkCoords(coords)) {
-				System.err.println();
-				System.err.println("Введены не верные координаты!");
 				System.err.println("Повторите ход.");
 				System.err.println();
+				Thread.currentThread().sleep(100);
 				makeMove(player);
 			} else {
-				setCell(coords[0], coords[1], player.PLAYER_CHAR);
+				setCell(coords.get("X"), coords.get("Y"), player.PLAYER_CHAR);
 			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 	}
 
-	private boolean checkCoords(int[] coords) {
-		boolean result = false;
+	private boolean checkCoords(Map<String, Integer> coords) {
+		boolean result = true;
 		int size = getFieldSize();
 		if (coords != null) {
-			for (int i = 0; i < coords.length; i++) {
-				if (coords[i] > 0 || coords[i] <= size) {
-					result = true;
-				}
+			if (coords.get("X") < 0 || coords.get("X") >= size) {
+				System.err.println("Не верное значение координаты X!");
+				result = false;
+			}
+			if (coords.get("Y") < 0 || coords.get("Y") >= size) {
+				System.err.println("Не верное значение координаты Y!");
+				result = false;
 			}
 			if (result) {
-				char currentCell = getCell(coords[0], coords[1]);
+				char currentCell = getCell(coords.get("X"), coords.get("Y"));
 				if (currentCell != FIELD_CLEAR) {
+					System.err.println("Ячейка по указанным координатам уже занята!");
 					result = false;
 				}
 			}

@@ -17,7 +17,6 @@ public class Main {
 		while (true) {
 			for (Player player: game.players) {
 				game.makeMove(player);
-				game.showGameField();
 				if (game.checkWin(player)) {
 					result = true;
 					System.out.println("Выиграл " + player.name);

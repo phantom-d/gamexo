@@ -1,6 +1,8 @@
 package gamexo.player;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Player {
@@ -21,8 +23,8 @@ public class Player {
 		name += " '" + PLAYER_CHAR.toString() + "'";
 	}
 
-	public int[] readCoords() throws IOException {
-		int[] coords = new int[2];
+	public Map<String, Integer> readCoords() throws IOException {
+		Map<String, Integer> coords = new HashMap<String, Integer>();
 		System.out.println();
 		switch (PLAYER_TYPE) {
 			case HUMAN:
@@ -35,19 +37,17 @@ public class Player {
 		return coords;
 	}
 
-	private int[] readCoordsComputer() throws IOException {
-		int[] coords = {
-			readCoord('X'),
-			readCoord('Y'),
-		};
+	private Map<String, Integer> readCoordsComputer() throws IOException {
+		Map<String, Integer> coords = new HashMap<String, Integer>();
+		coords.put("X", readCoord('X'));
+		coords.put("Y", readCoord('Y'));
 		return coords;
 	}
 
-	private int[] readCoordsHuman() throws IOException {
-		int[] coords = {
-			readCoord('X'),
-			readCoord('Y'),
-		};
+	private Map<String, Integer> readCoordsHuman() throws IOException {
+		Map<String, Integer> coords = new HashMap<String, Integer>();
+		coords.put("X", readCoord('X'));
+		coords.put("Y", readCoord('Y'));
 		return coords;
 	}
 
