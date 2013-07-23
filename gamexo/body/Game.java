@@ -9,40 +9,54 @@ public class Game {
 
 	private final Character FIELD_CELL_LEFT = '[';
 	private final Character FIELD_CELL_RIGHT = ']';
-	public final char[] PLAYER_CHAR = {'X', 'O'};
+	private final char FIELD_CLEAR = ' ';
+	public final char[] PLAYERS_CHARS = {'X', 'O'};
 	private int fieldSize = 3;
-	private String[][] gameField;
+	private char[][] gameField;
+	public Player[] players = new Player[PLAYERS_CHARS.length];;
 
 	public void init() throws IOException {
-		this.readFieldSize();
-		this.initField();
-		this.showGameField();
+		readFieldSize();
+		initField();
+		showGameField();
 	}
 
 	/**
 	 * Initialization game field
 	 */
 	private void initField() {
-		this.setGameField();
-		for (int y = 0; y < this.getFieldSize(); y++) {
-			for (int x = 0; x < this.getFieldSize(); x++) {
-				this.setCell(x, y, ' ');
+		setGameField();
+		for (int y = 0; y < getFieldSize(); y++) {
+			for (int x = 0; x < getFieldSize(); x++) {
+				setCell(x, y, FIELD_CLEAR);
 			}
 		}
 	}
 
 	public void showGameField() {
-		String[][] field = this.getGameField();
-		for (int y = 0; y < this.getFieldSize(); y++) {
-			for (int x = 0; x < this.getFieldSize(); x++) {
-				System.out.print(field[y][x]);
+		char[][] field = getGameField();
+		int size = getFieldSize();
+		size--;
+		for (int y = size; y >= 0; y--) {
+			for (int x = 0; x < getFieldSize(); x++) {
+				System.out.print(FIELD_CELL_LEFT.toString() + field[y][x] + FIELD_CELL_RIGHT.toString());
 			}
 			System.out.println();
 		}
 	}
 
 	public void setCell(int x, int y, char value) {
-		this.gameField[y][x] = this.FIELD_CELL_LEFT.toString() + value + this.FIELD_CELL_RIGHT.toString();
+		gameField[y][x] = value;
+	}
+
+	public char getCell(int x, int y) {
+		char result = FIELD_CLEAR;
+		for (char value: PLAYERS_CHARS) {
+			if (gameField[y][x] == value) {
+				result = value;
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -51,7 +65,7 @@ public class Game {
 	 * @return the fieldSize
 	 */
 	private int getFieldSize() {
-		return this.fieldSize;
+		return fieldSize;
 	}
 
 	/**
@@ -59,22 +73,22 @@ public class Game {
 	 *
 	 * @param fieldSize the fieldSize to set
 	 */
-	private void setFieldSize(int fieldSize) {
-		this.fieldSize = fieldSize;
+	private void setFieldSize(int newFieldSize) {
+		fieldSize = newFieldSize;
 	}
 
-	private String[][] getGameField() {
-		return this.gameField;
+	private char[][] getGameField() {
+		return gameField;
 	}
 
 	private void setGameField() {
-		int size = this.getFieldSize();
-		this.gameField = new String[size][size];
+		int size = getFieldSize();
+		gameField = new char[size][size];
 	}
 
 	private void readFieldSize() throws IOException {
 		BufferedReader buffer = new BufferedReader(new InputStreamReader(System.in));
-		int newFieldSize = this.getFieldSize();
+		int newFieldSize = getFieldSize();
 
 		System.out.print("Enter field size [" + newFieldSize + "]:");
 		String inputValue = buffer.readLine();
@@ -85,27 +99,28 @@ public class Game {
 			try {
 				newFieldSize = Integer.parseInt(inputValue);
 				if (newFieldSize > 0) {
-					this.setFieldSize(newFieldSize);
+					setFieldSize(newFieldSize);
 				} else {
-					this.readFieldSize();
+					readFieldSize();
 				}
 			} catch (NumberFormatException nfe) {
 				System.err.println("Invalid Format!");
-				this.readFieldSize();
+				readFieldSize();
 			}
 		}
 
 	}
 
 	public void makeMove(Player player) throws IOException {
+		System.out.println();
 		try {
 			int[] coords = player.readCoords();
-			if (!this.checkCoords(coords)) {
+			if (!checkCoords(coords)) {
 				System.err.println("Введены не верные координаты!");
 				System.out.println("Повторите ход.");
-				this.makeMove(player);
+				makeMove(player);
 			} else {
-				setCell(coords[0], coords[1], this.PLAYER_CHAR[player.PLAYER_NUM]);
+				setCell(coords[0], coords[1], player.PLAYER_CHAR);
 			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -113,11 +128,17 @@ public class Game {
 	}
 
 	private boolean checkCoords(int[] coords) {
-		boolean result = true;
-		int size = this.getFieldSize();
+		boolean result = false;
+		int size = getFieldSize();
 		if (coords != null) {
 			for (int i = 0; i < coords.length; i++) {
-				if (coords[i] < 0 || coords[i] > size) {
+				if (coords[i] > 0 || coords[i] <= size) {
+					result = true;
+				}
+			}
+			if (result) {
+				char currentCell = getCell(coords[0], coords[1]);
+				if (currentCell != FIELD_CLEAR) {
 					result = false;
 				}
 			}
@@ -127,9 +148,9 @@ public class Game {
 
 	public boolean checkWin(Player player) {
 		boolean result = false;
-		if (this.checkColls(player)
-			|| this.checkLines(player)
-				|| this.checkDiags(player)) {
+		if (checkColls(player)
+			|| checkLines(player)
+				|| checkDiags(player)) {
 			result = true;
 		}
 
@@ -138,15 +159,14 @@ public class Game {
 
 	private boolean checkColls(Player player) {
 		boolean result = false;
-		int size = this.getFieldSize();
-		String[][] field = this.getGameField();
+		int size = getFieldSize();
+		char[][] field = getGameField();
 		int contain;
 
 		for (int x = 0; x < size; x++) {
 			contain = 0;
 			for (int y = 0; y < size; y++) {
-				String cell = this.FIELD_CELL_LEFT.toString() + this.PLAYER_CHAR[player.PLAYER_NUM] + this.FIELD_CELL_RIGHT.toString();
-				if (field[y][x] == cell) {
+				if (field[y][x] == player.PLAYER_CHAR) {
 					contain++;
 				}
 			}
@@ -159,15 +179,14 @@ public class Game {
 	}
 	private boolean checkLines(Player player) {
 		boolean result = false;
-		int size = this.getFieldSize();
-		String[][] field = this.getGameField();
-		int contain = 0;
+		int size = getFieldSize();
+		char[][] field = getGameField();
+		int contain;
 
 		for (int y = 0; y < size; y++) {
 			contain = 0;
 			for (int x = 0; x < size; x++) {
-				String cell = this.FIELD_CELL_LEFT.toString() + this.PLAYER_CHAR[player.PLAYER_NUM] + this.FIELD_CELL_RIGHT.toString();
-				if (field[y][x] == cell) {
+				if (field[y][x] == player.PLAYER_CHAR) {
 					contain++;
 				}
 			}
@@ -180,13 +199,12 @@ public class Game {
 	}
 	private boolean checkDiags(Player player) {
 		boolean result = false;
-		int size = this.getFieldSize();
-		String[][] field = this.getGameField();
+		int size = getFieldSize();
+		char[][] field = getGameField();
 		int contain = 0;
 
 		for (int i = 0; i < size; i++) {
-			String cell = this.FIELD_CELL_LEFT.toString() + this.PLAYER_CHAR[player.PLAYER_NUM] + this.FIELD_CELL_RIGHT.toString();
-			if (field[i][i] == cell) {
+			if (field[i][i] == player.PLAYER_CHAR) {
 				contain++;
 			}
 		}
@@ -199,8 +217,7 @@ public class Game {
 		int j = size;
 		for (int i = 0; i < size; i++) {
 			j--;
-			String cell = this.FIELD_CELL_LEFT.toString() + this.PLAYER_CHAR[player.PLAYER_NUM] + this.FIELD_CELL_RIGHT.toString();
-			if (field[i][j] == cell) {
+			if (field[i][j] == player.PLAYER_CHAR) {
 				contain++;
 			}
 		}

@@ -10,19 +10,22 @@ public class Main {
 		Game game = new Game();
 		game.init();
 
-		Player[] players = {
-			new Player(0),
-			new Player(1)
-		};
-
+		for (int i = 0; i < game.PLAYERS_CHARS.length; i++) {
+			game.players[i] = new Player(game.PLAYERS_CHARS[i]);
+		}
+		boolean result = false;
 		while (true) {
-			for (int i = 0; i < players.length; i++) {
-				game.makeMove(players[i]);
+			for (Player player: game.players) {
+				game.makeMove(player);
 				game.showGameField();
-				if (game.checkWin(players[i])) {
-					System.out.println("Выиграл игрок с символом '" + game.PLAYER_CHAR[i] + "'!");
+				if (game.checkWin(player)) {
+					result = true;
+					System.out.println("Выиграл " + player.name);
 					break;
 				}
+			}
+			if (result) {
+				break;
 			}
 		}
 	}

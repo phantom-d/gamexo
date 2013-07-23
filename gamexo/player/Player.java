@@ -9,27 +9,28 @@ public class Player {
 	private static final int HUMAN = 0;
 	private static final int COMPUTER = 1;
 	private final int PLAYER_TYPE;
-	public final int PLAYER_NUM;
-	public String name = "Anonimus";
+	public final Character PLAYER_CHAR;
+	public String name = "Игрок";
 
-	public Player(int num) {
-		this(num, HUMAN);
+	public Player(char marker) {
+		this(marker, HUMAN);
 	}
 
-	public Player(int num, int type) {
-		this.PLAYER_TYPE = type;
-		this.PLAYER_NUM = num;
+	public Player(char marker, int type) {
+		PLAYER_TYPE = type;
+		PLAYER_CHAR = marker;
+		name += " '" + PLAYER_CHAR.toString() + "'";
 	}
 
 	public int[] readCoords() throws IOException {
 		int[] coords = new int[2];
 
-		switch (this.PLAYER_TYPE) {
+		switch (PLAYER_TYPE) {
 			case HUMAN:
-				coords = this.readCoordsHuman();
+				coords = readCoordsHuman();
 				break;
 			case COMPUTER:
-				coords = this.readCoordsComputer();
+				coords = readCoordsComputer();
 				break;
 		}
 		return coords;
@@ -46,11 +47,11 @@ public class Player {
 		int[] coords = new int[2];
 
 		while (true) {
-			System.out.println("Введите координаты X:");
+			System.out.println(name + ". Введите координаты X:");
 			String inputValueX = bufferX.readLine();
 
 			try {
-				coords[0] = Integer.parseInt(inputValueX);
+				coords[0] = Integer.parseInt(inputValueX) - 1;
 				break;
 			} catch (NumberFormatException nfe) {
 				System.err.println("Invalid Format!");
@@ -58,11 +59,11 @@ public class Player {
 		}
 
 		while (true) {
-			System.out.println("Введите координаты Y:");
+			System.out.println(name + ". Введите координаты Y:");
 			String inputValueY = bufferY.readLine();
 
 			try {
-				coords[1] = Integer.parseInt(inputValueY);
+				coords[1] = Integer.parseInt(inputValueY) - 1;
 				break;
 			} catch (NumberFormatException nfe) {
 				System.err.println("Invalid Format!");
@@ -78,7 +79,7 @@ public class Player {
 	 * @return the name
 	 */
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	/**
@@ -87,6 +88,6 @@ public class Player {
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
-		this.name = name;
+		name = name;
 	}
 }
