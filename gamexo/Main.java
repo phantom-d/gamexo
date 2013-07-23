@@ -10,8 +10,8 @@ public class Main {
 		Game game = new Game();
 		game.init();
 
-		for (int i = 0; i < game.PLAYERS_CHARS.length; i++) {
-			game.players[i] = new Player(game.PLAYERS_CHARS[i]);
+		for (char marker: game.PLAYERS_CHARS) {
+			game.players.add(new Player(marker));
 		}
 		boolean result = false;
 		while (true) {

@@ -3,6 +3,8 @@ package gamexo.body;
 import java.io.IOException;
 import java.util.Scanner;
 import gamexo.player.Player;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Game {
@@ -18,7 +20,7 @@ public class Game {
 
 	private int fieldSize = 3;
 	private char[][] gameField;
-	public Player[] players = new Player[PLAYERS_CHARS.length];
+	public List<Player> players = new ArrayList<Player>(PLAYERS_CHARS.length);
 
 	;
 
@@ -118,10 +120,11 @@ public class Game {
 		System.out.println();
 	}
 
-	public void makeMove(Player player) throws IOException {
+	public void makeMove(Player player) {
 		showGameField();
 		try {
-			Map<String, Integer> coords = player.readCoords();
+			player.readCoords();
+			Map<String, Integer> coords = player.getCoords();
 			if (!checkCoords(coords)) {
 				System.err.println("Повторите ход.");
 				System.err.println();

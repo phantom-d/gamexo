@@ -11,6 +11,8 @@ public class Player {
 	private static final int COMPUTER = 1;
 	private final int PLAYER_TYPE;
 	public final Character PLAYER_CHAR;
+
+	private Map<String, Integer> coords = new HashMap<String, Integer>();
 	public String name = "Игрок";
 
 	public Player(char marker) {
@@ -23,32 +25,26 @@ public class Player {
 		name += " '" + PLAYER_CHAR.toString() + "'";
 	}
 
-	public Map<String, Integer> readCoords() throws IOException {
-		Map<String, Integer> coords = new HashMap<String, Integer>();
+	public void readCoords() {
 		System.out.println();
 		switch (PLAYER_TYPE) {
 			case HUMAN:
-				coords = readCoordsHuman();
+				readCoordsHuman();
 				break;
 			case COMPUTER:
-				coords = readCoordsComputer();
+				readCoordsComputer();
 				break;
 		}
-		return coords;
 	}
 
-	private Map<String, Integer> readCoordsComputer() throws IOException {
-		Map<String, Integer> coords = new HashMap<String, Integer>();
-		coords.put("X", readCoord('X'));
-		coords.put("Y", readCoord('Y'));
-		return coords;
+	private void readCoordsComputer() {
+		getCoords().put("X", readCoord('X'));
+		getCoords().put("Y", readCoord('Y'));
 	}
 
-	private Map<String, Integer> readCoordsHuman() throws IOException {
-		Map<String, Integer> coords = new HashMap<String, Integer>();
-		coords.put("X", readCoord('X'));
-		coords.put("Y", readCoord('Y'));
-		return coords;
+	private void readCoordsHuman() {
+		getCoords().put("X", readCoord('X'));
+		getCoords().put("Y", readCoord('Y'));
 	}
 
 	private int readCoord(char marker) {
@@ -84,4 +80,12 @@ public class Player {
 	public void setName(String name) {
 		name = name;
 	}
+
+	/**
+	 * @return the coords
+	 */
+	public Map<String, Integer> getCoords() {
+		return coords;
+	}
+
 }
