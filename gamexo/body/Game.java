@@ -10,7 +10,6 @@ public class Game {
 	private final Character FIELD_CELL_LEFT = '[';
 	private final Character FIELD_CELL_RIGHT = ']';
 	public final char[] PLAYER_CHAR = {'X', 'O'};
-
 	private int fieldSize = 3;
 	private String[][] gameField;
 
@@ -32,7 +31,7 @@ public class Game {
 		}
 	}
 
-	private void showGameField() {
+	public void showGameField() {
 		String[][] field = this.getGameField();
 		for (int y = 0; y < this.getFieldSize(); y++) {
 			for (int x = 0; x < this.getFieldSize(); x++) {
@@ -48,6 +47,7 @@ public class Game {
 
 	/**
 	 * Get game field size
+	 *
 	 * @return the fieldSize
 	 */
 	private int getFieldSize() {
@@ -56,6 +56,7 @@ public class Game {
 
 	/**
 	 * Set game field size
+	 *
 	 * @param fieldSize the fieldSize to set
 	 */
 	private void setFieldSize(int fieldSize) {
@@ -83,7 +84,11 @@ public class Game {
 		} else {
 			try {
 				newFieldSize = Integer.parseInt(inputValue);
-				this.setFieldSize(newFieldSize);
+				if (newFieldSize > 0) {
+					this.setFieldSize(newFieldSize);
+				} else {
+					this.readFieldSize();
+				}
 			} catch (NumberFormatException nfe) {
 				System.err.println("Invalid Format!");
 				this.readFieldSize();
@@ -92,15 +97,15 @@ public class Game {
 
 	}
 
-	public void makeMove(Player player, int playerNum) throws IOException {
+	public void makeMove(Player player) throws IOException {
 		try {
 			int[] coords = player.readCoords();
 			if (!this.checkCoords(coords)) {
 				System.err.println("Введены не верные координаты!");
 				System.out.println("Повторите ход.");
-				this.makeMove(player, playerNum);
+				this.makeMove(player);
 			} else {
-				setCell(coords[0], coords[1], this.PLAYER_CHAR[playerNum]);
+				setCell(coords[0], coords[1], this.PLAYER_CHAR[player.PLAYER_NUM]);
 			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -108,15 +113,101 @@ public class Game {
 	}
 
 	private boolean checkCoords(int[] coords) {
-		boolean returnValue = true;
+		boolean result = true;
 		int size = this.getFieldSize();
 		if (coords != null) {
 			for (int i = 0; i < coords.length; i++) {
 				if (coords[i] < 0 || coords[i] > size) {
-					returnValue = false;
+					result = false;
 				}
 			}
 		}
-		return returnValue;
+		return result;
+	}
+
+	public boolean checkWin(Player player) {
+		boolean result = false;
+		if (this.checkColls(player)
+			|| this.checkLines(player)
+				|| this.checkDiags(player)) {
+			result = true;
+		}
+
+		return result;
+	}
+
+	private boolean checkColls(Player player) {
+		boolean result = false;
+		int size = this.getFieldSize();
+		String[][] field = this.getGameField();
+		int contain;
+
+		for (int x = 0; x < size; x++) {
+			contain = 0;
+			for (int y = 0; y < size; y++) {
+				String cell = this.FIELD_CELL_LEFT.toString() + this.PLAYER_CHAR[player.PLAYER_NUM] + this.FIELD_CELL_RIGHT.toString();
+				if (field[y][x] == cell) {
+					contain++;
+				}
+			}
+
+			if (size == contain) {
+				result = true;
+			}
+		}
+		return result;
+	}
+	private boolean checkLines(Player player) {
+		boolean result = false;
+		int size = this.getFieldSize();
+		String[][] field = this.getGameField();
+		int contain = 0;
+
+		for (int y = 0; y < size; y++) {
+			contain = 0;
+			for (int x = 0; x < size; x++) {
+				String cell = this.FIELD_CELL_LEFT.toString() + this.PLAYER_CHAR[player.PLAYER_NUM] + this.FIELD_CELL_RIGHT.toString();
+				if (field[y][x] == cell) {
+					contain++;
+				}
+			}
+
+			if (size == contain) {
+				result = true;
+			}
+		}
+		return result;
+	}
+	private boolean checkDiags(Player player) {
+		boolean result = false;
+		int size = this.getFieldSize();
+		String[][] field = this.getGameField();
+		int contain = 0;
+
+		for (int i = 0; i < size; i++) {
+			String cell = this.FIELD_CELL_LEFT.toString() + this.PLAYER_CHAR[player.PLAYER_NUM] + this.FIELD_CELL_RIGHT.toString();
+			if (field[i][i] == cell) {
+				contain++;
+			}
+		}
+
+		if (size == contain) {
+			result = true;
+		}
+
+		contain = 0;
+		int j = size;
+		for (int i = 0; i < size; i++) {
+			j--;
+			String cell = this.FIELD_CELL_LEFT.toString() + this.PLAYER_CHAR[player.PLAYER_NUM] + this.FIELD_CELL_RIGHT.toString();
+			if (field[i][j] == cell) {
+				contain++;
+			}
+		}
+
+		if (size == contain) {
+			result = true;
+		}
+		return result;
 	}
 }

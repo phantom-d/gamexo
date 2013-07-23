@@ -10,14 +10,19 @@ public class Main {
 		Game game = new Game();
 		game.init();
 
-		Object[] players = {
-			new Player(),
-			new Player()
+		Player[] players = {
+			new Player(0),
+			new Player(1)
 		};
 
 		while (true) {
 			for (int i = 0; i < players.length; i++) {
-
+				game.makeMove(players[i]);
+				game.showGameField();
+				if (game.checkWin(players[i])) {
+					System.out.println("Выиграл игрок с символом '" + game.PLAYER_CHAR[i] + "'!");
+					break;
+				}
 			}
 		}
 	}
