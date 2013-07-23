@@ -1,7 +1,6 @@
 package gamexo;
 
 import gamexo.body.Game;
-import gamexo.player.Human;
 import gamexo.player.Player;
 import java.io.IOException;
 
@@ -12,8 +11,8 @@ public class Main {
 		game.init();
 
 		Object[] players = {
-			new Player(0),
-			new Player(0),
+			new Player(),
+			new Player()
 		};
 
 		while (true) {

@@ -1,6 +1,6 @@
 package gamexo.body;
 
-import gamexo.player.Human;
+import gamexo.player.Player;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
