@@ -1,9 +1,8 @@
 package gamexo.body;
 
-import gamexo.player.Player;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.Scanner;
+import gamexo.player.Player;
 
 public class Game {
 
@@ -37,12 +36,14 @@ public class Game {
 		char[][] field = getGameField();
 		int size = getFieldSize();
 		size--;
+		System.out.println();
 		for (int y = size; y >= 0; y--) {
 			for (int x = 0; x < getFieldSize(); x++) {
 				System.out.print(FIELD_CELL_LEFT.toString() + field[y][x] + FIELD_CELL_RIGHT.toString());
 			}
 			System.out.println();
 		}
+		System.out.println();
 	}
 
 	public void setCell(int x, int y, char value) {
@@ -87,15 +88,13 @@ public class Game {
 	}
 
 	private void readFieldSize() throws IOException {
-		BufferedReader buffer = new BufferedReader(new InputStreamReader(System.in));
+		Scanner scanner = new Scanner(System.in);
 		int newFieldSize = getFieldSize();
 
-		System.out.print("Enter field size [" + newFieldSize + "]:");
-		String inputValue = buffer.readLine();
+		System.out.print("Введите размер игрового поля [" + newFieldSize + "]: ");
+		String inputValue = scanner.nextLine();
 
-		if ("".equals(inputValue)) {
-			System.out.println("Set default value of game field size.");
-		} else {
+		if (!inputValue.isEmpty()) {
 			try {
 				newFieldSize = Integer.parseInt(inputValue);
 				if (newFieldSize > 0) {
@@ -108,16 +107,18 @@ public class Game {
 				readFieldSize();
 			}
 		}
-
+		System.out.println("Размер игрового поля: " + newFieldSize + "x" + newFieldSize + ".");
+		System.out.println();
 	}
 
 	public void makeMove(Player player) throws IOException {
-		System.out.println();
 		try {
 			int[] coords = player.readCoords();
 			if (!checkCoords(coords)) {
+				System.err.println();
 				System.err.println("Введены не верные координаты!");
-				System.out.println("Повторите ход.");
+				System.err.println("Повторите ход.");
+				System.err.println();
 				makeMove(player);
 			} else {
 				setCell(coords[0], coords[1], player.PLAYER_CHAR);

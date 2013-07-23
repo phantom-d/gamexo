@@ -1,8 +1,7 @@
 package gamexo.player;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.Scanner;
 
 public class Player {
 
@@ -24,7 +23,7 @@ public class Player {
 
 	public int[] readCoords() throws IOException {
 		int[] coords = new int[2];
-
+		System.out.println();
 		switch (PLAYER_TYPE) {
 			case HUMAN:
 				coords = readCoordsHuman();
@@ -37,40 +36,35 @@ public class Player {
 	}
 
 	private int[] readCoordsComputer() throws IOException {
-		int[] coords = new int[2];
+		int[] coords = {
+			readCoord('X'),
+			readCoord('Y'),
+		};
 		return coords;
 	}
 
 	private int[] readCoordsHuman() throws IOException {
-		BufferedReader bufferY = new BufferedReader(new InputStreamReader(System.in));
-		BufferedReader bufferX = new BufferedReader(new InputStreamReader(System.in));
-		int[] coords = new int[2];
-
-		while (true) {
-			System.out.println(name + ". Введите координаты X:");
-			String inputValueX = bufferX.readLine();
-
-			try {
-				coords[0] = Integer.parseInt(inputValueX) - 1;
-				break;
-			} catch (NumberFormatException nfe) {
-				System.err.println("Invalid Format!");
-			}
-		}
-
-		while (true) {
-			System.out.println(name + ". Введите координаты Y:");
-			String inputValueY = bufferY.readLine();
-
-			try {
-				coords[1] = Integer.parseInt(inputValueY) - 1;
-				break;
-			} catch (NumberFormatException nfe) {
-				System.err.println("Invalid Format!");
-			}
-		}
-
+		int[] coords = {
+			readCoord('X'),
+			readCoord('Y'),
+		};
 		return coords;
+	}
+
+	private int readCoord(char marker) {
+		Scanner scanner = new Scanner(System.in);
+
+		while (true) {
+			System.out.print(name + ". Введите координаты " + marker + ": ");
+			String inputValue = scanner.nextLine();
+
+			try {
+				return Integer.parseInt(inputValue) - 1;
+			} catch (NumberFormatException nfe) {
+				System.err.println("Invalid Format!");
+				readCoord(marker);
+			}
+		}
 	}
 
 	/**

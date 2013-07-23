@@ -1,8 +1,8 @@
 package gamexo;
 
+import java.io.IOException;
 import gamexo.body.Game;
 import gamexo.player.Player;
-import java.io.IOException;
 
 public class Main {
 
