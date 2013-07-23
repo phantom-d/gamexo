@@ -17,9 +17,15 @@ public class Main {
 		while (true) {
 			for (Player player: game.players) {
 				game.makeMove(player);
-				if (game.checkWin(player)) {
+				int checkWin = game.checkWin(player);
+				if (checkWin == Game.PLAYER_WIN) {
 					result = true;
-					System.out.println("Выиграл " + player.name);
+					System.out.println("Выиграл " + player.name + "!");
+					break;
+				}
+				if (checkWin == Game.PLAYER_DRAW) {
+					result = true;
+					System.out.println("Ничья!");
 					break;
 				}
 			}

@@ -10,10 +10,17 @@ public class Game {
 	private final Character FIELD_CELL_LEFT = '[';
 	private final Character FIELD_CELL_RIGHT = ']';
 	private final char FIELD_CLEAR = ' ';
+
 	public final char[] PLAYERS_CHARS = {'X', 'O'};
+	public static final int PLAYER_WIN = 1;
+	public static final int PLAYER_DRAW = 0;
+	public static final int NEXT_TURN = -1;
+
 	private int fieldSize = 3;
 	private char[][] gameField;
-	public Player[] players = new Player[PLAYERS_CHARS.length];;
+	public Player[] players = new Player[PLAYERS_CHARS.length];
+
+	;
 
 	public void init() throws IOException {
 		readFieldSize();
@@ -52,7 +59,7 @@ public class Game {
 
 	public char getCell(int x, int y) {
 		char result = FIELD_CLEAR;
-		for (char value: PLAYERS_CHARS) {
+		for (char value : PLAYERS_CHARS) {
 			if (gameField[y][x] == value) {
 				result = value;
 			}
@@ -151,17 +158,33 @@ public class Game {
 		return result;
 	}
 
-	public boolean checkWin(Player player) {
-		boolean result = false;
+	public int checkWin(Player player) {
+		int result = NEXT_TURN;
 		if (checkColls(player)
-			|| checkLines(player)
-				|| checkDiags(player)) {
-			result = true;
+			   || checkLines(player)
+			   || checkDiags(player)) {
+			result = PLAYER_WIN;
+		}
+
+		if (!checkClearFields()) {
+			result = PLAYER_DRAW;
+		}
+		return result;
+	}
+
+	private boolean checkClearFields() {
+		boolean result = false;
+		char[][] field = getGameField();
+		for (char[] row: field) {
+			for (char col: row) {
+				if (col == FIELD_CLEAR) {
+					result = true;
+				}
+			}
 		}
 
 		return result;
 	}
-
 	private boolean checkColls(Player player) {
 		boolean result = false;
 		int size = getFieldSize();
@@ -182,6 +205,7 @@ public class Game {
 		}
 		return result;
 	}
+
 	private boolean checkLines(Player player) {
 		boolean result = false;
 		int size = getFieldSize();
@@ -202,6 +226,7 @@ public class Game {
 		}
 		return result;
 	}
+
 	private boolean checkDiags(Player player) {
 		boolean result = false;
 		int size = getFieldSize();
