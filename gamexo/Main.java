@@ -5,12 +5,12 @@ import gamexo.player.Player;
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		Game game = new Game();
 		game.init();
 
 		for (char marker : game.PLAYERS_CHARS) {
-			game.players.add(new Player(marker));
+			game.players.add(new Player().init(marker));
 		}
 		boolean result = false;
 		while (true) {
@@ -19,7 +19,7 @@ public class Main {
 				int checkWin = game.checkWin(player);
 				if (checkWin == Game.PLAYER_WIN) {
 					result = true;
-					System.out.println("Выиграл " + player.name + "!");
+					System.out.println("Выиграл " + player.getName() + "!");
 					break;
 				}
 				if (checkWin == Game.PLAYER_DRAW) {
