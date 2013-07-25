@@ -174,10 +174,10 @@ public class Game {
 			   || checkLines(player)
 			   || checkDiags(player)) {
 			result = PLAYER_WIN;
-		}
-
-		if (!checkClearFields()) {
-			result = PLAYER_DRAW;
+		} else {
+			if (!checkClearFields()) {
+				result = PLAYER_DRAW;
+			}
 		}
 		return result;
 	}

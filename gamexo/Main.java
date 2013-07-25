@@ -24,6 +24,7 @@ public class Main {
 				}
 				if (checkWin == Game.PLAYER_DRAW) {
 					result = true;
+					game.showGameField();
 					System.out.println("Ничья!");
 					break;
 				}

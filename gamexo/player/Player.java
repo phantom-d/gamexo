@@ -23,7 +23,7 @@ public class Player {
 		PLAYER_CHAR = marker;
 		readPlayerType();
 		readPlayerName();
-		setName(getName() + " (" + marker + ")");
+		setName(getName() + " [" + marker + "]");
 		return this;
 	}
 
@@ -131,8 +131,8 @@ public class Player {
 	 *
 	 * @param name the name to set
 	 */
-	private void setName(String name) {
-		name = name;
+	private void setName(String newName) {
+		name = newName;
 	}
 
 	private void setCoord(String marker, int coord) {
