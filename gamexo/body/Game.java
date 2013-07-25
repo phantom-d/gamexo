@@ -27,7 +27,7 @@ public class Game {
 	 */
 	private int fieldSize = 3;
 	private char[][] gameField;
-	public List<Player> players = new ArrayList<Player>(PLAYERS_CHARS.length);
+	private List<Player> players = new ArrayList<Player>(PLAYERS_CHARS.length);
 
 	;
 
@@ -266,5 +266,19 @@ public class Game {
 			result = true;
 		}
 		return result;
+	}
+
+	/**
+	 * @return the players
+	 */
+	public void setPlayer(Player player) {
+		players.add(player);
+	}
+
+	/**
+	 * @return the players
+	 */
+	public List<Player> getPlayers() {
+		return players;
 	}
 }

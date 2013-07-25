@@ -10,11 +10,11 @@ public class Main {
 		game.init();
 
 		for (char marker : game.PLAYERS_CHARS) {
-			game.players.add(new Player().init(marker));
+			game.setPlayer(new Player().init(marker));
 		}
 		boolean result = false;
 		while (true) {
-			for (Player player : game.players) {
+			for (Player player : game.getPlayers()) {
 				game.makeMove(player);
 				int checkWin = game.checkWin(player);
 				if (checkWin == Game.PLAYER_WIN) {
