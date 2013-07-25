@@ -1,8 +1,6 @@
 package gamexo.player;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Player {
 
@@ -11,16 +9,31 @@ public class Player {
 	 */
 	private static final int HUMAN = 0;
 	private static final int COMPUTER = 1;
+	private static final int REMOTE= 2;
+	private static final int PLAYER_LOCAL= 0;
+	private static final int PLAYER_REMOTE= 1;
+	/**
+	 * Local Constants
+	 */
+	private final int REMOTE_USER;
 	/**
 	 * Variables
 	 */
-	private int PLAYER_TYPE;
+	private int playerType;
 	private Map<String, Integer> coords = new HashMap<String, Integer>();
 	private String name = "Игрок";
-	public Character PLAYER_CHAR;
+	private char playerChar;
+
+	public Player() {
+		this(PLAYER_LOCAL);
+	}
+
+	public Player(int remoteUser) {
+		REMOTE_USER = remoteUser;
+	}
 
 	public Player init(char marker) throws InterruptedException {
-		PLAYER_CHAR = marker;
+		setPlayerChar(marker);
 		readPlayerType();
 		readPlayerName();
 		setName(getName() + " [" + marker + "]");
@@ -32,7 +45,7 @@ public class Player {
 		while (true) {
 			System.out.println((HUMAN + 1) + ". Человек");
 			System.out.println((COMPUTER + 1) + ". Компьютер");
-			System.out.print("Выберите тип игрока для маркера `" + PLAYER_CHAR + "` [" + (HUMAN + 1) + "]: ");
+			System.out.print("Выберите тип игрока для маркера `" + getPlayerChar() + "` [" + (HUMAN + 1) + "]: ");
 			String inputValue = scanner.nextLine();
 			if ("".equals(inputValue)) {
 				inputValue = "1";
@@ -43,19 +56,18 @@ public class Player {
 					System.err.println("Не правильный ввод!");
 					System.err.println("Повторите выбор.");
 					Thread.currentThread().sleep(100);
-					readPlayerType();
+				} else {
+					switch (type) {
+						case HUMAN:
+							System.out.println("Выбраный тип игрока \"Человек\"");
+							break;
+						case COMPUTER:
+							System.out.println("Выбраный тип игрока \"Компьютер\"");
+							break;
+					}
+					playerType = type;
 					break;
 				}
-				switch (type) {
-					case HUMAN:
-						System.out.println("Выбраный тип игрока \"Человек\"");
-						break;
-					case COMPUTER:
-						System.out.println("Выбраный тип игрока \"Компьютер\"");
-						break;
-				}
-				PLAYER_TYPE = type;
-				break;
 			} catch (NumberFormatException nfe) {
 				System.err.println("Invalid Format!");
 				readPlayerType();
@@ -67,31 +79,39 @@ public class Player {
 		Scanner scanner = new Scanner(System.in);
 		scanner.useDelimiter("\n");
 		while (true) {
-			System.out.print("Введите имя игрока для маркера `" + PLAYER_CHAR + "` [" + getName() + "]: ");
+			System.out.print("Введите имя игрока для маркера `" + getPlayerChar() + "` [" + getName() + "]: ");
 			String inputValue = scanner.nextLine();
 
 			if ("".equals(inputValue)) {
 				inputValue = getName();
 			}
 			setName(inputValue);
-			System.out.println("Имя игрока для маркера `" + PLAYER_CHAR + "`: " + getName());
+			System.out.println("Имя игрока для маркера `" + getPlayerChar() + "`: " + getName());
 			break;
 		}
 	}
 
 	public void readCoords() {
 		System.out.println();
-		switch (PLAYER_TYPE) {
+		switch (playerType) {
 			case HUMAN:
 				readCoordsHuman();
 				break;
 			case COMPUTER:
 				readCoordsComputer();
 				break;
+			case REMOTE:
+				readCoordsRemote();
+				break;
 		}
 	}
 
 	private void readCoordsComputer() {
+		setCoord("X", readCoord('X'));
+		setCoord("Y", readCoord('Y'));
+	}
+
+	private void readCoordsRemote() {
 		setCoord("X", readCoord('X'));
 		setCoord("Y", readCoord('Y'));
 	}
@@ -145,5 +165,19 @@ public class Player {
 	 */
 	public Map<String, Integer> getCoords() {
 		return coords;
+	}
+
+	/**
+	 * @return the playerChar
+	 */
+	public Character getPlayerChar() {
+		return playerChar;
+	}
+
+	/**
+	 * @param playerChar the playerChar to set
+	 */
+	private void setPlayerChar(char newPlayerChar) {
+		playerChar = newPlayerChar;
 	}
 }

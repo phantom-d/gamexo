@@ -1,9 +1,6 @@
-package gamexo.body;
+package gamexo.game;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import gamexo.player.Player;
 
 public class Game {
@@ -11,6 +8,8 @@ public class Game {
 	/**
 	 * Class Constants
 	 */
+	private static final int GAME_LOCAL = 0;
+	private static final int GAME_REMOTE = 1;
 	public static final int PLAYER_WIN = 1;
 	public static final int PLAYER_DRAW = 0;
 	public static final int NEXT_TURN = -1;
@@ -25,13 +24,15 @@ public class Game {
 	/**
 	 * Variables
 	 */
+	private int gameType = GAME_LOCAL;
 	private int fieldSize = 3;
 	private char[][] gameField;
 	private List<Player> players = new ArrayList<Player>(PLAYERS_CHARS.length);
 
 	;
 
-	public void init() {
+	public void init() throws InterruptedException {
+		readGameType();
 		readFieldSize();
 		initField();
 	}
@@ -103,6 +104,42 @@ public class Game {
 		gameField = new char[size][size];
 	}
 
+	private void readGameType() throws InterruptedException {
+		Scanner scanner = new Scanner(System.in);
+		while (true) {
+			System.out.println((GAME_LOCAL + 1) + ". На компьютере");
+			System.out.println((GAME_REMOTE + 1) + ". По сети");
+			System.out.print("Выберите тип игры [" + (GAME_LOCAL + 1) + "]: ");
+			String inputValue = scanner.nextLine();
+			if ("".equals(inputValue)) {
+				inputValue = "1";
+			}
+			try {
+				int type = Integer.parseInt(inputValue) - 1;
+				if (type != GAME_LOCAL && type != GAME_REMOTE) {
+					System.err.println("Не правильный ввод!");
+					System.err.println("Повторите выбор.");
+					Thread.currentThread().sleep(100);
+					readGameType();
+					break;
+				}
+				switch (type) {
+					case GAME_LOCAL:
+						System.out.println("Выбран тип игры \"На компьютере\"");
+						break;
+					case GAME_REMOTE:
+						System.out.println("Выбраный тип игры \"По сети\"");
+						break;
+				}
+				setGameType(type);
+				break;
+			} catch (NumberFormatException nfe) {
+				System.err.println("Invalid Format!");
+				readGameType();
+			}
+		}
+	}
+
 	private void readFieldSize() {
 		Scanner scanner = new Scanner(System.in);
 		int newFieldSize = getFieldSize();
@@ -138,7 +175,7 @@ public class Game {
 				Thread.currentThread().sleep(100);
 				makeMove(player);
 			} else {
-				setCell(coords.get("X"), coords.get("Y"), player.PLAYER_CHAR);
+				setCell(coords.get("X"), coords.get("Y"), player.getPlayerChar());
 			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -170,9 +207,10 @@ public class Game {
 
 	public int checkWin(Player player) {
 		int result = NEXT_TURN;
-		if (checkColls(player)
-			   || checkLines(player)
-			   || checkDiags(player)) {
+		char playerChar = player.getPlayerChar();
+		if (checkColls(playerChar)
+			   || checkLines(playerChar)
+			   || checkDiags(playerChar)) {
 			result = PLAYER_WIN;
 		} else {
 			if (!checkClearFields()) {
@@ -195,7 +233,7 @@ public class Game {
 
 		return result;
 	}
-	private boolean checkColls(Player player) {
+	private boolean checkColls(char playerChar) {
 		boolean result = false;
 		int size = getFieldSize();
 		char[][] field = getGameField();
@@ -204,7 +242,7 @@ public class Game {
 		for (int x = 0; x < size; x++) {
 			contain = 0;
 			for (int y = 0; y < size; y++) {
-				if (field[y][x] == player.PLAYER_CHAR) {
+				if (field[y][x] == playerChar) {
 					contain++;
 				}
 			}
@@ -216,7 +254,7 @@ public class Game {
 		return result;
 	}
 
-	private boolean checkLines(Player player) {
+	private boolean checkLines(char playerChar) {
 		boolean result = false;
 		int size = getFieldSize();
 		char[][] field = getGameField();
@@ -225,7 +263,7 @@ public class Game {
 		for (int y = 0; y < size; y++) {
 			contain = 0;
 			for (int x = 0; x < size; x++) {
-				if (field[y][x] == player.PLAYER_CHAR) {
+				if (field[y][x] == playerChar) {
 					contain++;
 				}
 			}
@@ -237,14 +275,14 @@ public class Game {
 		return result;
 	}
 
-	private boolean checkDiags(Player player) {
+	private boolean checkDiags(char playerChar) {
 		boolean result = false;
 		int size = getFieldSize();
 		char[][] field = getGameField();
 		int contain = 0;
 
 		for (int i = 0; i < size; i++) {
-			if (field[i][i] == player.PLAYER_CHAR) {
+			if (field[i][i] == playerChar) {
 				contain++;
 			}
 		}
@@ -257,7 +295,7 @@ public class Game {
 		int j = size;
 		for (int i = 0; i < size; i++) {
 			j--;
-			if (field[i][j] == player.PLAYER_CHAR) {
+			if (field[i][j] == playerChar) {
 				contain++;
 			}
 		}
@@ -272,7 +310,7 @@ public class Game {
 	 * @return the players
 	 */
 	public void setPlayer(Player player) {
-		players.add(player);
+		this.players.add(player);
 	}
 
 	/**
@@ -280,5 +318,19 @@ public class Game {
 	 */
 	public List<Player> getPlayers() {
 		return players;
+	}
+
+	/**
+	 * @return the gameType
+	 */
+	public int getGameType() {
+		return gameType;
+	}
+
+	/**
+	 * @param gameType the gameType to set
+	 */
+	public void setGameType(int type) {
+		this.gameType = type;
 	}
 }
