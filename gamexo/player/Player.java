@@ -20,6 +20,8 @@ public class Player {
 	 * Variables
 	 */
 	private int playerType;
+
+	private Collection<Map<String,Integer>> historyCoords = new HashSet<Map<String,Integer>>();
 	private Map<String, Integer> coords = new HashMap<String, Integer>();
 	private String name = "Игрок";
 	private char playerChar;
@@ -119,6 +121,7 @@ public class Player {
 	private void readCoordsHuman() {
 		setCoord("X", readCoord('X'));
 		setCoord("Y", readCoord('Y'));
+		addToHistory();
 	}
 
 	private int readCoord(char marker) {
@@ -179,5 +182,19 @@ public class Player {
 	 */
 	private void setPlayerChar(char newPlayerChar) {
 		playerChar = newPlayerChar;
+	}
+
+	/**
+	 * @return the historyCoords
+	 */
+	public Collection<Map<String,Integer>> getHistoryCoords() {
+		return historyCoords;
+	}
+
+	/**
+	 * @param historyCoords the historyCoords to set
+	 */
+	public void addToHistory() {
+		historyCoords.add(getCoords());
 	}
 }

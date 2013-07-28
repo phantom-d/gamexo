@@ -1,5 +1,5 @@
 package gamexo.player;
 
-public class Computer {
+public class Computer extends Player {
 
 }
